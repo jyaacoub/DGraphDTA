@@ -99,12 +99,14 @@ if __name__ == '__main__':
     results_dir = 'results'
 
     device = torch.device(cuda_name if torch.cuda.is_available() else 'cpu')
-    model_file_name = 'models/model_' + model_st + '_' + dataset + '.model'
+    model_file_name = f'models/model_GNN_{dataset}_t2.model' # loading t2 model
     result_file_name = 'results/result_' + model_st + '_' + dataset + '.txt'
 
     model = GNNNet()
-    model.to(device)
-    model.load_state_dict(torch.load(model_file_name, map_location=cuda_name))
+    model.to(device) 
+    
+    cp = torch.load(model_file_name, map_location=device) # loading checkpoint
+    model.load_state_dict(cp)
     test_data = create_dataset_for_test(dataset)
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=TEST_BATCH_SIZE, shuffle=False,
                                               collate_fn=collate)
