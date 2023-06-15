@@ -102,25 +102,13 @@ if __name__ == '__main__':
     results_dir = 'results'
 
     device = torch.device(cuda_name if torch.cuda.is_available() else 'cpu')
-    model_file_name = 'models/model_' + model_st + '_' + dataset + '.model'
+    model_file_name = f'models/model_GNN_{dataset}_t2.model' # loading t2 model
     result_file_name = 'results/result_' + model_st + '_' + dataset + '.txt'
 
     model = GNNNet()
-    model.to(device)
-    # TODO: change state_dict keys before loading to ensure compatibility with torch 2.0 and prevent the following error:
-    # RuntimeError: Error(s) in loading state_dict for GNNNet:
-    #   Missing key(s) in state_dict:    "mol_conv1.lin.weight", "mol_conv2.lin.weight", "mol_conv3.lin.weight", 
-    #                                    "pro_conv1.lin.weight", "pro_conv2.lin.weight", "pro_conv3.lin.weight". 
-    #   Unexpected key(s) in state_dict: "mol_conv1.weight",     "mol_conv2.weight",     "mol_conv3.weight",     
-    #                                    "pro_conv1.weight",     "pro_conv2.weight",     "pro_conv3.weight". 
-    cp = torch.load(model_file_name, map_location=cuda_name) # loading checkpoint
-    # renaming keys to be compatible with torch 2.0
-    broken_keys = ['mol_conv1.weight', 'mol_conv2.weight', 'mol_conv3.weight', 'pro_conv1.weight', 'pro_conv2.weight', 'pro_conv3.weight']
-    for key in broken_keys:
-        new_key = key.replace('.weight', '.lin.weight')
-        # transpose weights to be compatible with torch 2.0
-        cp[new_key] = cp.pop(key).transpose(0, 1)    
+    model.to(device) 
     
+    cp = torch.load(model_file_name, map_location=device) # loading checkpoint
     model.load_state_dict(cp)
     test_data = create_dataset_for_test(dataset)
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=TEST_BATCH_SIZE, shuffle=False,
