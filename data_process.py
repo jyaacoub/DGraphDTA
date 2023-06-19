@@ -180,9 +180,11 @@ def seq_feature(pro_seq):
     return np.concatenate((pro_hot, pro_property), axis=1)
 
 
-def target_feature(aln_file, pro_seq):
-    pssm = PSSM_calculation(aln_file, pro_seq)
-    other_feature = seq_feature(pro_seq)
+# target aln file save in data/dataset/aln
+def target_to_feature(target_key, target_seq, aln_dir):
+    # aln_dir = 'data/' + dataset + '/aln'
+    pssm = PSSM_calculation(os.path.join(aln_dir, target_key + '.aln'), target_seq)
+    other_feature = seq_feature(target_seq)
     # print('target_feature')
     # print(pssm.shape)
     # print(other_feature.shape)
@@ -190,16 +192,6 @@ def target_feature(aln_file, pro_seq):
     # print(other_feature.shape)
     # return other_feature
     return np.concatenate((np.transpose(pssm, (1, 0)), other_feature), axis=1)
-
-
-# target aln file save in data/dataset/aln
-def target_to_feature(target_key, target_sequence, aln_dir):
-    # aln_dir = 'data/' + dataset + '/aln'
-    aln_file = os.path.join(aln_dir, target_key + '.aln')
-    # if 'X' in target_sequence:
-    #     print(target_key)
-    feature = target_feature(aln_file, target_sequence)
-    return feature
 
 
 # pconsc4 predicted contact map save in data/dataset/pconsc4
