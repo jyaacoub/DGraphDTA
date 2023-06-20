@@ -5,6 +5,7 @@ import numpy as np
 from random import shuffle
 import matplotlib.pyplot as plt
 from torch_geometric.data import Batch
+from lifelines.utils import concordance_index
 
 from emetrics import get_aupr, get_cindex, get_rm2, get_ci, get_mse, get_rmse, get_pearson, get_spearman
 from utils import *
@@ -38,6 +39,7 @@ def calculate_metrics(Y, P, dataset='davis'):
     # aupr = get_aupr(Y, P)
     cindex = get_cindex(Y, P)  # DeepDTA
     cindex2 = get_ci(Y, P)  # GraphDTA
+    ci3 = concordance_index(Y, P)  # lifelines
     rm2 = get_rm2(Y, P)  # DeepDTA
     mse = get_mse(Y, P)
     pearson = get_pearson(Y, P)
@@ -48,6 +50,7 @@ def calculate_metrics(Y, P, dataset='davis'):
     # print('aupr:', aupr)
     print('cindex:', cindex)
     print('cindex2', cindex2)
+    print('lifelines.CI', ci3)
     print('rm2:', rm2)
     print('mse:', mse)
     print('pearson', pearson)
