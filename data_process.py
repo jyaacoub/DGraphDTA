@@ -146,8 +146,8 @@ def smile_to_graph(smile):
 def PSSM_calculation(aln_file, pro_seq):
     pfm_mat = np.zeros((len(pro_res_table), len(pro_seq)))
     with open(aln_file, 'r') as f:
-        line_count = len(f.readlines())
-        for line in f.readlines():
+        line_count = len(f.readlines()) # CANT GET THE LINE COUNT LIKE THIS BC THE FILE OBJECT BECOMES EMPTY AFTER THE FIRST READ
+        for line in f.readlines(): # ERROR: BIG ISSUE HERE - f.readlines() is empty. FOR LOOP NEVER EXECUTES
             if len(line) != len(pro_seq):
                 print('error', len(line), len(pro_seq))
                 continue
@@ -180,9 +180,13 @@ def seq_feature(pro_seq):
     return np.concatenate((pro_hot, pro_property), axis=1)
 
 
-def target_feature(aln_file, pro_seq):
-    pssm = PSSM_calculation(aln_file, pro_seq)
-    other_feature = seq_feature(pro_seq)
+# target aln file save in data/dataset/aln
+def target_to_feature(target_key, target_seq, aln_dir):
+    # aln_dir = 'data/' + dataset + '/aln'
+    #PSSM_calculation:
+    pssm = np.zeros((len(pro_res_table), len(target_seq))) #PSSM_calculation(os.path.join(aln_dir, target_key + '.aln'), target_seq)
+    
+    other_feature = seq_feature(target_seq)
     # print('target_feature')
     # print(pssm.shape)
     # print(other_feature.shape)
