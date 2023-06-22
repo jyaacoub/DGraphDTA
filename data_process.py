@@ -193,7 +193,6 @@ def seq_feature(pro_seq):
 def target_to_feature(target_key, target_seq, aln_dir):
     # aln_dir = 'data/' + dataset + '/aln'
     #PSSM_calculation:
-    print('ZEROOO')
     pssm = np.zeros((len(pro_res_table), len(target_seq))) #PSSM_calculation(os.path.join(aln_dir, target_key + '.aln'), target_seq)
     
     other_feature = seq_feature(target_seq)
@@ -214,7 +213,7 @@ def target_to_graph(target_key, target_sequence, contact_dir, aln_dir):
     contact_file = os.path.join(contact_dir, target_key + '.npy')
     contact_map = np.load(contact_file)
     contact_map += np.matrix(np.eye(contact_map.shape[0]))
-    index_row, index_col = np.where(contact_map >= 0.5)
+    index_row, index_col = np.where(contact_map >= 0.5) # probability of contact >= 0.5
     for i, j in zip(index_row, index_col):
         target_edge_index.append([i, j])
     target_feature = target_to_feature(target_key, target_sequence, aln_dir)
@@ -252,11 +251,6 @@ def create_dataset_for_test(dataset):
     # load contact and aln
     msa_path = 'data/' + dataset + '/aln'
     contac_path = 'data/' + dataset + '/pconsc4'
-    msa_list = []
-    contact_list = []
-    for key in proteins:
-        msa_list.append(os.path.join(msa_path, key + '.aln'))
-        contact_list.append(os.path.join(contac_path, key + '.npy'))
 
     drugs = []
     prots = []
